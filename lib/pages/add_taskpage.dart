@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:to_do_app/pages/widgets/tasks.dart';
 
 class AddTaskpage extends StatefulWidget {
   const new({super.key});
@@ -10,7 +11,9 @@ class AddTaskpage extends StatefulWidget {
 class _AddTaskpageState extends State<AddTaskpage> {
   final TextEditingController _taskController = TextEditingController();
   final TextEditingController _taskDescriptionController = TextEditingController();
-  @override
+  List<Tasks> tasks = List.empty(growable: true);
+  
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -22,7 +25,6 @@ class _AddTaskpageState extends State<AddTaskpage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(height: 30),
             CircleAvatar(
@@ -34,44 +36,48 @@ class _AddTaskpageState extends State<AddTaskpage> {
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
-                  child: Text('Task Title',
-                  style: TextStyle(
-                    fontSize: 17
-                  ),),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 5,
+                  ),
+                  child: Text('Task Title', style: TextStyle(fontSize: 17)),
                 ),
               ],
             ),
             Card(
+              elevation: 8,
               margin: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   TextField(
                     controller: _taskController,
                     decoration: InputDecoration(
+                      border: InputBorder.none,
                       contentPadding: EdgeInsets.all(15),
                       hintText: 'Eg. Buy Groceries',
-                      hintStyle: TextStyle(
-                        color: Colors.grey
-                      )
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
                 ],
-              )
+              ),
             ),
             SizedBox(height: 30),
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 5),
-                  child: Text('Task Description',
-                  style: TextStyle(
-                    fontSize: 17
-                  ),),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 5,
+                  ),
+                  child: Text(
+                    'Task Description (Optional)',
+                    style: TextStyle(fontSize: 17),
+                  ),
                 ),
               ],
             ),
             Card(
+              elevation: 8,
               margin: EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
@@ -80,16 +86,40 @@ class _AddTaskpageState extends State<AddTaskpage> {
                     keyboardType: TextInputType.multiline,
                     controller: _taskDescriptionController,
                     decoration: InputDecoration(
+                      border: InputBorder.none,
                       contentPadding: EdgeInsets.all(15),
                       hintText: 'Eg. Buy essential groceries for the week, including vegetables, fruits, milk, bread, eggs, and other household items.',
-                      hintStyle: TextStyle(
-                        color: Colors.grey
-                      )
+                      hintStyle: TextStyle(color: Colors.grey),
                     ),
                   ),
                 ],
-              )
-            )
+              ),
+            ),
+            SizedBox(height: 70),
+            Container(
+              width: 200,
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    tasks.add(Tasks(
+                      title: _taskController.text,
+                      description: _taskDescriptionController.text,
+                      isCompleted: false,
+                    ));
+                  });
+                  Navigator.pop(context, tasks);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  elevation: 8,
+                ),
+                child: Text("Add Task",
+                style: TextStyle(
+                  color: Colors.white
+                ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
