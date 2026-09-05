@@ -71,6 +71,16 @@ class _HomepageState extends State<Homepage> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),
+      bottomNavigationBar: NavigationBar(
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.work), 
+            label: "Tasks"),
+          NavigationDestination(
+            icon: Icon(Icons.settings), 
+            label: 'Settings')
+        ],
+        ),
     );
   }
 }
