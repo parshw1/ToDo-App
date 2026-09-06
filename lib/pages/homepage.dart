@@ -41,7 +41,6 @@ class _HomepageState extends State<Homepage> {
               itemCount: tasks.length,
               itemBuilder: (context, index) {
                 final task = tasks[index];
-
                 return Card(
                   child: ListTile(
                     leading: Checkbox(
@@ -54,6 +53,34 @@ class _HomepageState extends State<Homepage> {
                     ),
                     title: Text(task.title),
                     subtitle: Text(task.description),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            final updatedtask = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => AddTaskpage(task: task),
+                              ),
+                            );
+                            if(updatedtask != null){
+                              setState(() {
+                                tasks[index] = updatedtask;
+                              });
+                            }
+                          },
+                          icon: Icon(Icons.edit),
+                        ),
+                        IconButton(
+                          onPressed: (){
+                            setState(() {
+                              tasks.removeAt(index);
+                            });
+                          }, 
+                          icon: Icon(Icons.delete))
+                      ],
+                    ),
                   ),
                 );
               },
@@ -85,7 +112,7 @@ class _HomepageState extends State<Homepage> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final addedtask = await Navigator.push(
+          final Tasks? addedtask = await Navigator.push(
             context,
             MaterialPageRoute(builder: (BuildContext context) => AddTaskpage()),
           );

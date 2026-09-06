@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:to_do_app/pages/widgets/tasks.dart';
 
 class AddTaskpage extends StatefulWidget {
-  const AddTaskpage({super.key});
+  final Tasks? task;
+  const AddTaskpage({super.key, this.task});
 
   @override
   State<AddTaskpage> createState() => _AddTaskpageState();
@@ -11,8 +12,18 @@ class AddTaskpage extends StatefulWidget {
 class _AddTaskpageState extends State<AddTaskpage> {
   final TextEditingController _taskController = TextEditingController();
   final TextEditingController _taskDescriptionController = TextEditingController();
-  
-    @override
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.task != null) {
+      _taskController.text = widget.task!.title;
+      _taskDescriptionController.text = widget.task!.description;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -100,22 +111,18 @@ class _AddTaskpageState extends State<AddTaskpage> {
               child: ElevatedButton(
                 onPressed: () {
                   final addedtask = Tasks(
-                      id: DateTime.fromMillisecondsSinceEpoch.toString(),
-                      title: _taskController.text,
-                      description: _taskDescriptionController.text,
-                      isCompleted: false,
-                    );
+                    id: widget.task?.id??DateTime.now().millisecondsSinceEpoch.toString(),
+                    title: _taskController.text,
+                    description: _taskDescriptionController.text,
+                    isCompleted: widget.task?.isCompleted??false,
+                  );
                   Navigator.pop(context, addedtask);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   elevation: 8,
                 ),
-                child: Text("Add Task",
-                style: TextStyle(
-                  color: Colors.white
-                ),
-                ),
+                child: Text("Add Task", style: TextStyle(color: Colors.white)),
               ),
             ),
           ],
