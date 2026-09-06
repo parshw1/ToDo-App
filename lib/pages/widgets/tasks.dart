@@ -1,6 +1,8 @@
 class Tasks {
+  String id;
   String title;
   String description;
-  bool isCompleted = false;
-  Tasks({required this.title, required this.description, required this.isCompleted});
+  bool isCompleted;
+
+Tasks({required this.id,required this.title,required this.description,this.isCompleted = false,});
 }

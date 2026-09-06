@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/pages/add_taskpage.dart';
+import 'package:to_do_app/pages/widgets/tasks.dart';
 
 class Homepage extends StatefulWidget {
-  const new({super.key});
+  const Homepage({super.key});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -10,8 +11,8 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   bool searching = false;
-  bool isTaskGenerated = false;
   final TextEditingController _searchInput = TextEditingController();
+  List<Tasks> tasks = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +36,28 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
       drawer: Drawer(shadowColor: Colors.black),
-      body: isTaskGenerated
-          ? null
+      body: tasks.isNotEmpty
+          ? ListView.builder(
+              itemCount: tasks.length,
+              itemBuilder: (context, index) {
+                final task = tasks[index];
+
+                return Card(
+                  child: ListTile(
+                    leading: Checkbox(
+                      value: task.isCompleted,
+                      onChanged: (value) {
+                        setState(() {
+                          task.isCompleted = value ?? false;
+                        });
+                      },
+                    ),
+                    title: Text(task.title),
+                    subtitle: Text(task.description),
+                  ),
+                );
+              },
+            )
           : Center(
               child: Center(
                 child: Column(
@@ -63,9 +84,16 @@ class _HomepageState extends State<Homepage> {
               ),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, 
-          MaterialPageRoute(builder: (BuildContext context) => AddTaskpage()));
+        onPressed: () async {
+          final addedtask = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (BuildContext context) => AddTaskpage()),
+          );
+          if (addedtask != null) {
+            setState(() {
+              tasks.add(addedtask);
+            });
+          }
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.black,
@@ -73,14 +101,10 @@ class _HomepageState extends State<Homepage> {
       ),
       bottomNavigationBar: NavigationBar(
         destinations: [
-          NavigationDestination(
-            icon: Icon(Icons.work), 
-            label: "Tasks"),
-          NavigationDestination(
-            icon: Icon(Icons.settings), 
-            label: 'Settings')
+          NavigationDestination(icon: Icon(Icons.work), label: "Tasks"),
+          NavigationDestination(icon: Icon(Icons.settings), label: 'Settings'),
         ],
-        ),
+      ),
     );
   }
 }
