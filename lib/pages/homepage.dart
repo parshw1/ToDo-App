@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:to_do_app/pages/add_taskpage.dart';
 import 'package:to_do_app/pages/widgets/tasks.dart';
+import 'package:to_do_app/pages/widgets/storage.dart';
+import 'package:to_do_app/pages/widgets/segmented_buttons.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -13,6 +15,22 @@ class _HomepageState extends State<Homepage> {
   bool searching = false;
   final TextEditingController _searchInput = TextEditingController();
   List<Tasks> tasks = [];
+  int selectedIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadTasks();
+  }
+
+  Future loadTasks() async {
+    final savedTasks = await TaskStorage.loadTasks();
+
+    setState(() {
+      tasks = savedTasks;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,21 +82,24 @@ class _HomepageState extends State<Homepage> {
                                 builder: (context) => AddTaskpage(task: task),
                               ),
                             );
-                            if(updatedtask != null){
+                            if (updatedtask != null) {
                               setState(() {
                                 tasks[index] = updatedtask;
                               });
+                              await TaskStorage.saveTasks(tasks);
                             }
                           },
                           icon: Icon(Icons.edit),
                         ),
                         IconButton(
-                          onPressed: (){
+                          onPressed: () async {
                             setState(() {
                               tasks.removeAt(index);
                             });
-                          }, 
-                          icon: Icon(Icons.delete))
+                            await TaskStorage.saveTasks(tasks);
+                          },
+                          icon: Icon(Icons.delete),
+                        ),
                       ],
                     ),
                   ),
@@ -120,6 +141,7 @@ class _HomepageState extends State<Homepage> {
             setState(() {
               tasks.add(addedtask);
             });
+            await TaskStorage.saveTasks(tasks);
           }
         },
         child: Icon(Icons.add),
